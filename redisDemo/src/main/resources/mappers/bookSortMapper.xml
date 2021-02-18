@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.redisdemo.mapper.BookSortMapper">
+    <resultMap id="BookSortResultMap" type="BookSort">
+        <id property="bsId" column="bs_id"></id>
+        <result property="bsName" column="bs_name"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <sql id="selectBookSortVo">
+        select bs_id,bs_name,description,create_time,update_time from book_sort
+    </sql>
+    <select id="selectBookSortAll" resultMap="BookSortResultMap">
+        <include refid="selectBookSortVo"></include>
+    </select>
+    <select id="selectBookSortById" parameterType="Long" resultMap="BookSortResultMap">
+        <include refid="selectBookSortVo"></include>
+        where bs_id=#{bsId}
+    </select>
+    <select id="selectBookSort" parameterType="BookSort" resultMap="BookSortResultMap">
+        <include refid="selectBookSortVo"></include>
+        <where>
+            <if test="bsId!=null and bsId!=0">bs_id=#{bsId}</if>
+            <if test="bsName!=null and nsName!=''">and bs_name=#{bsName}</if>
+            <if test="description!=null and description!=''">and description=#{dsecription}</if>
+        </where>
+    </select>
+    <delete id="deleteBookSort" parameterType="Long">
+        delete from book_sort where bs_id=#{bsId}
+    </delete>
+    <insert id="insertBookSort" parameterType="BookSort" useGeneratedKeys="true" keyProperty="bsId">
+        insert into book_sort(
+        <if test="bsName!=null and bsName!=''">bs_name,</if>
+        <if test="description!=null and description!=''">description,</if>
+        create_time
+        )values(
+        <if test="bsName!=null and bsName!=''">#{bsName},</if>
+        <if test="description!=null and description!=''">#{description},</if>
+        sysdate()
+        )
+    </insert>
+    <update id="updateBookSort" parameterType="BookSort">
+        update book_sort
+        <set>
+            <if test="bsName!=null and bsName!=''">bs_name=#{bsName},</if>
+            <if test="description!=null and description!=''">description=#{description},</if>
+            update_time=sysdate()
+        </set>
+        where bs_id=#{bsId}
+    </update>
+
+</mapper>

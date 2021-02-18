@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.redisdemo.mapper.ManagerMapper">
+    <resultMap id="managerResultMap" type="Manager">
+        <id property="mId" column="m_id"></id>
+        <result property="managerName" column="manager_name"/>
+        <result property="email" column="email"/>
+        <result property="loginAccountId" column="login_account_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <sql id="selectManagerVo">
+        select m_id,email,manager_name,login_account_id,create_time,update_time from manager
+    </sql>
+    <select id="selectManagerById" parameterType="Long" resultMap="managerResultMap">
+        <include refid="selectManagerVo"></include>
+        where m_id=#{mId}
+    </select>
+    <select id="selectManagerAll" resultMap="managerResultMap">
+        <include refid="selectManagerVo"></include>
+    </select>
+    <select id="selectManager" parameterType="Manager" resultMap="managerResultMap">
+        <include refid="selectManagerVo"></include>
+        <where>
+            <if test="mId!=null and mId!=0">m_id=#{mId}</if>
+            <if test="email!=null and email!=''">and email=#{email}</if>
+            <if test="managerName!=null and managerName!=''"> and manager_name=#{managerName}</if>
+            <if test="loginAccountId!=null and loginAccountId!=0"> and login_account_id=#{loginAccountId}</if>
+        </where>
+    </select>
+    <delete id="deleteManager" parameterType="Long">
+        delete from manager where m_id=#{mId}
+    </delete>
+    <insert id="insertManager" parameterType="Manager" useGeneratedKeys="true" keyProperty="mId">
+        insert into manager(
+        <if test="managerName!=null and managerName!=''">manager_name,</if>
+        <if test="email!=null and email!=''">email,</if>
+        <if test="loginAccountId!=null and loginAccountId!=0">login_account_id,</if>
+        create_time
+        )values(
+        <if test="managerName!=null and managerName!=''">#{managerName},</if>
+        <if test="email!=null and email!=''">#{email},</if>
+        <if test="loginAccountId!=null and loginAccountId!=0">#{loginAccountId},</if>
+        sysdate()
+        )
+    </insert>
+    <update id="updateManager" parameterType="Manager">
+        update manager
+        <set>
+            <if test="managerName!=null and managerName!=''">manager_name=#{managerName},</if>
+            <if test="email!=null and email!=''">email=#{email},</if>
+            <if test="loginAccountId!=null and loginAccountId!=0">login_account_id=#{loginAccountId},</if>
+            update_time=sysdate()
+        </set>
+        where m_id=#{mId}
+    </update>
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.redisdemo.mapper.RuleMapper">
+    <resultMap id="RuleResultMap" type="Rule">
+        <id property="rId" column="r_id"></id>
+        <result property="borrowNum" column="borrow_num"/>
+        <result property="limitDay" column="limit_day"/>
+        <result property="borrowLibrary" column="borrowLibrary"/>
+        <result property="overTimeFee" column="overtime_fee"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <sql id="selectRuleVo">
+        select r_id,borrow_num,limit_day,borrow_library,overtime_fee,create_time,update_time from rule
+    </sql>
+    <select id="selectRuleById" parameterType="Long" resultMap="RuleResultMap">
+        <include refid="selectRuleVo"></include>
+        where r_id=#{rId}
+    </select>
+    <select id="selectRuleAll" resultMap="RuleResultMap">
+        <include refid="selectRuleVo"></include>
+    </select>
+    <select id="selectRule" resultMap="RuleResultMap" parameterType="Rule">
+        <include refid="selectRuleVo"></include>
+        <where>
+            <if test="rId!=null and rId!=0">r_id=#{rId}</if>
+            <if test="borrowNum!=null and borrowNum!=''">and borrow_num=#{borrowNum}</if>
+            <if test="limitDay!=null and limitDay!=''">and limit_day=#{limitDay}</if>
+            <if test="borrowLibrary!=null and borrowLibrary!=''">and borrow_library=#{borrowLibrary}</if>
+        </where>
+    </select>
+    <insert id="insertRule" parameterType="Rule" useGeneratedKeys="true" keyProperty="rId">
+        insert into rule(
+        <if test="borrowNum!=null and borrowNum!=''">borrow_num,</if>
+        <if test="limitDay!=null and limitDay!=''">limit_day,</if>
+        <if test="borrowLibrary!=null and borrowLibrary!=''">borrow_library,</if>
+        <if test="overTimeFee!=null and overTimeFee!=''">overtime_fee,</if>
+        create_time
+        )values(
+        <if test="borrowNum!=null and borrowNum!=''">#{borrowNum},</if>
+        <if test="limitDay!=null and limitDay!=''">#{limitDay},</if>
+        <if test="borrowLibrary!=null and borrowLibrary!=''">#{borrowLibrary},</if>
+        <if test="overTimeFee!=null and overTimeFee!=''">#{overTimeFee},</if>
+        sysdate()
+        )
+    </insert>
+    <update id="updateRule" parameterType="Rule">
+        update rule
+        <set>
+            <if test="borrowNum!=null and borrowNum!=''">borrow_num=#{borrowNum},</if>
+            <if test="limitDay!=null and limitDay!=''">limit_day=#{limitDay},</if>
+            <if test="borrowLibrary!=null and borrowLibrary!=''">borrow_library=#{borrowLibrary},</if>
+            <if test="overTimeFee!=null and overTimeFee!=''">overtime_fee=#{overTimeFee},</if>
+            update_time=sysdate()
+        </set>
+        where r_id=#{rId}
+    </update>
+    <delete id="deleteRule" parameterType="Long">
+        delete from rule where r_id=#{rId}
+    </delete>
+</mapper>

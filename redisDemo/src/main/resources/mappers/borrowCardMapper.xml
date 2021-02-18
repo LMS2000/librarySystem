@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.redisdemo.mapper.BorrowCardMapper">
+    <resultMap id="borrowCardResultMap" type="BorrowCard">
+        <id property="bcId" column="bc_id"/>
+        <result property="reader" column="reader"/>
+        <result property="ruleId" column="rule_id"/>
+        <result property="borrowStatus" column="is_borrow"/>
+        <result property="loginAccountId" column="login_account_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <sql id="selectBorrowCardVo">
+        select bc_id, reader,rule_id,is_borrow,login_account_id,create_time,update_time from borrow_card
+    </sql>
+    <select id="selectBorrowCardById" parameterType="Long" resultMap="borrowCardResultMap">
+        <include refid="selectBorrowCardVo"></include>
+        where bc_id=#{bcId}
+    </select>
+    <select id="selectBorrowCardAll" resultMap="borrowCardResultMap">
+        <include refid="selectBorrowCardVo"></include>
+    </select>
+    <select id="selectBorrowCard" parameterType="BorrowCard" resultMap="borrowCardResultMap">
+        <include refid="selectBorrowCardVo"/>
+        <where>
+            <if test="bcId!=null and bcId!=0">bc_id=#{bcId}</if>
+            <if test="reader!=null and reader!=''">and reader=#{reader}</if>
+            <if test="ruleId!=null and ruleId!=0">and rule_id=#{ruleId}</if>
+            <if test="borrowStatus!=null and borrowStatus!=''">and is_borrow=#{borrowStatus}</if>
+            <if test="loginAccountId!=null and loginAccountId!=0">and login_account_id=#{loginAccountId}</if>
+        </where>
+    </select>
+    <update id="updateBorrowCard" parameterType="BorrowCard">
+        update borrow_card
+        <set>
+            <if test="reader!=null and reader!=''">reader=#{reader},</if>
+            <if test="ruleId!=null and ruleId!=0">rule_id=#{ruleId},</if>
+            <if test="borrowStatus!=null and borrowStatus!=''">is_borrow=#{borrowStatus},</if>
+            <if test="loginAccountId!=null and loginAccountId!=0"> login_account_id=#{loginAccountId},</if>
+             update_time=sysdate()
+        </set>
+        where  bc_id=#{bcId}
+    </update>
+    <insert id="insertBorrowCard" parameterType="BorrowCard" useGeneratedKeys="true" keyProperty="bcId">
+        insert into borrow_card(
+         <if test="reader!=null and reader!=''">reader,</if>
+         <if test="ruleId!=null and ruleId!=0">rule_id,</if>
+         <if test="borrowStatus!=null and borrowStatus!=''">is_borrow,</if>
+         <if test="loginAccountId!=null and loginAccountId!=0">login_account_id,</if>
+         create_time
+        )values(
+        <if test="reader!=null and reader!=''">#{reader},</if>
+        <if test="ruleId!=null and ruleId!=0">#{ruleId},</if>
+        <if test="borrowStatus!=null and borrowStatus!=''">#{borrowStatus},</if>
+        <if test="loginAccountId!=null and loginAccountId!=0">#{loginAccountId},</if>
+        sysdate()
+        )
+    </insert>
+    <delete id="deleteBorrowCard" parameterType="Long">
+        delete from borrow_card where bc_id=#{bcId}
+    </delete>
+</mapper>

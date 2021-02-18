@@ -1,0 +1,40 @@
+package com.example.redisdemo.domain;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+
+public class RolePojo implements GrantedAuthority {
+    private Integer id;
+    private String roleName;
+    private String roleDesc;
+    //@JsonIgnore:一般标记在属性或者方法上，返回的json数据即不包含该属性
+    @Override
+    @JsonIgnore
+    public String getAuthority() {
+        return roleName;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getRoleDesc() {
+        return roleDesc;
+    }
+
+    public void setRoleDesc(String roleDesc) {
+        this.roleDesc = roleDesc;
+    }
+}

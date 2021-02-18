@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.redisdemo.mapper.BookMapper">
+    <resultMap id="BookResultMap" type="Book">
+        <id property="bId" column="b_id"></id>
+        <result property="bookName" column="book_name"/>
+        <result property="bookAuthor" column="book_author"/>
+        <result property="libraryId" column="library_id"/>
+        <result property="sortId" column="sort_id"/>
+        <result property="bookPosition" column="book_position"/>
+        <result property="borrowState" column="is_borrow"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap id="LibraryResultMap" type="Library">
+        <id property="lId" column="l_id"></id>
+        <result property="libraryName" column="library_name"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <sql id="selectBookVo">
+        select b_id,book_author,library_id,sort_id,book_position,is_borrow,description,create_time,update_time from book
+    </sql>
+    <select id="selectLibraryById" resultMap="LibraryResultMap" parameterType="Long">
+        select l_id,library_name,description,create_time,update_time from library where l_id=#{lId}
+    </select>
+    <select id="selectBookAll" resultMap="BookResultMap">
+        <include refid="selectBookVo"></include>
+    </select>
+    <select id="selectBookById" parameterType="Long" resultMap="BookResultMap">
+        <include refid="selectBookVo"></include>
+        where b_id=#{bId}
+    </select>
+    <select id="selectBook" parameterType="Book" resultMap="BookResultMap">
+        <include refid="selectBookVo"></include>
+        <where>
+            <if test="bId!=null and bId!=0">b_id=#{bId}</if>
+            <if test="bookName!=null and bookName!=''">and book_name=#{bookName}</if>
+            <if test="bookAuthor!=null and bookAuthor!=''">and book_author=#{bookAuthor}</if>
+            <if test="libraryId!=null and libraryId!=0">and library_id=#{libraryId}</if>
+            <if test="sortId!=null and sortId!=0">and sort_id=#{sortId}</if>
+            <if test="bookPosition!=null and bookPosition!=''">and book_position=#{bookPosition}</if>
+            <if test="borrowState!=null and borrowState!=''">and is_borrow=#{borrowState}</if>
+            <if test="description!=null and description!=''">and description=#{description}</if>
+        </where>
+    </select>
+    <update id="updateBook" parameterType="Book" >
+        update book
+        <set>
+            <if test="bookName!=null and bookName!=''">book_name=#{bookName},</if>
+            <if test="bookAuthor!=null and bookAuthor!=''">book_author=#{bookAuthor},</if>
+            <if test="libraryId!=null and libraryId!=0">library_id=#{libraryId},</if>
+            <if test="sortId!=null and sortId!=0">sort_id=#{sortId},</if>
+            <if test="bookPosition!=null and bookPosition!=''">book_position=#{bookPosition},</if>
+            <if test="borrowState!=null and borrowState!=''">is_borrow=#{borrowState},</if>
+            <if test="description!=null and description!=''">description=#{description},</if>
+           update_time=sysdate()
+        </set>
+        where b_id=#{bId}
+    </update>
+    <insert id="insertBook" parameterType="Book" keyProperty="bId" useGeneratedKeys="true">
+        insert into book(
+        <if test="bookName!=null and bookName!=''">book_name,</if>
+        <if test="bookAuthor!=null and bookAuthor!=''">book_author,</if>
+        <if test="libraryId!=null and libraryId!=0">library_id,</if>
+        <if test="sortId!=null and sortId!=0">sort_id,</if>
+        <if test="bookPosition!=null and bookPosition!=''">book_position,</if>
+        <if test="borrowState!=null and borrowState!=''">is_borrow,</if>
+        <if test="description!=null and description!=''">description,</if>
+        create_time
+        )values(
+        <if test="bookName!=null and bookName!=''">#{bookName},</if>
+        <if test="bookAuthor!=null and bookAuthor!=''">#{bookAuthor},</if>
+        <if test="libraryId!=null and libraryId!=0">#{libraryId},</if>
+        <if test="sortId!=null and sortId!=0">#{sortId},</if>
+        <if test="bookPosition!=null and bookPosition!=''">#{bookPosition},</if>
+        <if test="borrowState!=null and borrowState!=''">#{borrowState},</if>
+        <if test="description!=null and description!=''">#{description},</if>
+        sysdate()
+        )
+    </insert>
+    <delete id="deleteBook" parameterType="Long">
+        delete from book where b_id=#{bId}
+    </delete>
+</mapper>

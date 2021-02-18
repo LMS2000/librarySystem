@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.redisdemo.mapper.MissLoginMapper">
+    <resultMap id="missLoginResultMap" type="LoginMiss">
+        <id column="id" property="id"></id>
+        <result property="uId" column="u_id"/>
+        <result property="missTime" column="miss_time"/>
+        <result property="missNumber" column="miss_number"/>
+        <result property="missFlag" column="miss_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="selectMissLogin" parameterType="Long" resultMap="missLoginResultMap">
+        select id,u_id,miss_time,miss_number,miss_flag,create_time,update_time from login_miss where u_id=#{uId}
+    </select>
+    <insert id="insertMissLogin" parameterType="LoginMiss" useGeneratedKeys="true" keyProperty="id">
+        insert into login_miss(
+        <if test="uId!=null">u_id,</if>
+        <if test="missTime!=null">miss_time,</if>
+        <if test="missNumber!=null">miss_number,</if>
+        <if test="missFlag!=null">miss_flag,</if>
+        create_time
+        )values(
+        <if test="uId!=null">#{uId},</if>
+        <if test="missTime!=null">#{missTime},</if>
+        <if test="missNumber!=null">#{missNumber},</if>
+        <if test="missFlag!=null">#{missFlag},</if>
+        sysdate()
+        )
+    </insert>
+    <update id="updateMissLogin" parameterType="LoginMiss">
+        update login_miss
+        <set>
+            <if test="uId!=null">u_id=#{uId},</if>
+            <if test="missTime!=null">miss_time=#{missTime},</if>
+            <if test="missNumber!=null">miss_number=#{missNumber},</if>
+            <if test="missFlag!=null">miss_flag=#{missFlag},</if>
+            update_time=sysdate()
+        </set>
+        where id=#{id}
+    </update>
+    <update id="updateMissTime" parameterType="Long">
+        update login_miss set miss_number=miss_number+1,update_time=sysdate() where u_id=#{uId}
+    </update>
+</mapper>

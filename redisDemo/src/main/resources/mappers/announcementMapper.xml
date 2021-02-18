@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.redisdemo.mapper.AnnouncementMapper">
+    <resultMap id="announcementResultMap" type="Announcement">
+        <id property="aId" column="a_id"></id>
+        <result property="title" column="title"/>
+        <result property="detail" column="detail"/>
+        <result property="publishDate" column="publish_date"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <sql id="selectAnnouncementVo">
+        select a_id,title,detail,publish_date,update_time from announcement
+    </sql>
+    <select id="selectAnnouncementAll" resultMap="announcementResultMap">
+        <include refid="selectAnnouncementVo"></include>
+    </select>
+    <select id="selectAnnouncementById" resultMap="announcementResultMap" parameterType="Long">
+        <include refid="selectAnnouncementVo"></include>
+        where a_id=#{aId}
+    </select>
+    <select id="selectAnnouncement" parameterType="Announcement" resultMap="announcementResultMap">
+        <include refid="selectAnnouncementVo"></include>
+        <where>
+            <if test="aId!=null and aId!=0">a_id=#{aId}</if>
+            <if test="title!=null and title!=''">and title=#{title}</if>
+            <if test="detail!=null and detail!=''">and detail=#{detail}</if>
+        </where>
+    </select>
+    <insert id="insertAnnouncement" parameterType="Announcement" useGeneratedKeys="true" keyProperty="aId">
+        insert into announcement(
+        <if test="title!=null and title!=''">title,</if>
+        <if test="detail!=null and detail!=''">detail,</if>
+        publish_date
+        )values(
+        <if test="title!=null and title!=''">#{title},</if>
+        <if test="detail!=null and detail!=''">#{detail},</if>
+        SYSDATE()
+        )
+    </insert>
+    <update id="updateAnnouncement" parameterType="Announcement">
+        update announcement
+        <set>
+            <if test="title!=null and title!=''">title=#{title},</if>
+            <if test="detail!=null and detail!=''">detail=#{detail},</if>
+            update_time=sysdate()
+        </set>
+        where a_id=#{aId}
+    </update>
+    <delete id="deleteAnnouncement" parameterType="Long">
+        delete from announcement  where a_id=#{aId}
+    </delete>
+</mapper>

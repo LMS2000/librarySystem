@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function changeGreen(event) {
+          console.log("green rrun 22222222");
+          event.stopPropagation();
+
+        }
+        function changeOUT(event) {
+            console.log("grw rrun 22222222");
+          event.stopPropagation();
+        }
+    </script>
+</head>
+<body>
+
+<form id="form2">
+    <input id="username"  type="text" placeholder="请输入用户。。"><br>
+    <span id="usernamespan" style="color: red"></span><br>
+    <input id=" password"type="password" placeholder="请输入密码。。。"><br>
+    <span id="passwordspan" style="color: red"></span><br>
+    <input id="age" type="text" placeholder="请输入年龄。。"><br>
+    <span id="agespan" style="color: red"></span><br>
+    <input type="submit" value="提交">
+</form>
+
+
+<script>
+    window.onload=function () {
+      document.getElementById("form2").onsubmit=function () {
+          return checkusername()&&checkpassword()&&checkage();
+
+        function checkusername() {
+            var name=document.getElementById("username").value;
+            var reg=/^\w{6,10}$/;
+            var flag=reg.test(name);
+            if(flag)
+            {
+            }
+            else{
+                document.getElementById("usernamespan").innerText="用户错误需要6-10字符！"
+                console.log("错误")
+            }
+            return flag;
+        }
+          function checkpassword() {
+              var name=document.getElementById("password").value;
+              var reg=/^\w{6}$/;
+              var flag=reg.test(name);
+              if(flag)
+              {
+              }
+              else{
+                  document.getElementById("passwordspan").innerText="密码错误要6位"
+                  console.log("错误")
+              }
+              return flag;
+          }
+          function checkage() {
+              var name=document.getElementById("age").value;
+              var reg=/^[0-9]{2}$/;
+              var flag=reg.test(name);
+              if(flag)
+              {
+              }
+              else{
+                  document.getElementById("agespan").innerText="年龄错误要1 ，2 位数字"
+                  console.log("错误")
+              }
+              return flag;
+          }
+          
+          
+      }
+    }
+</script>
+</body>
+</html>
